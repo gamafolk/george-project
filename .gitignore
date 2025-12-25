@@ -1,2 +1,6 @@
 models/
 out/
+third_party/
+CMakeFiles/
+build/
+lib/
