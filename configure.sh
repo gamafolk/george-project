@@ -2,11 +2,33 @@
 
 # Script para build e execução do projeto George
 
-echo "Iniciando build do projeto..."
+echo " > Iniciando processo de build"
 
-# Verifica se bibliotecas pré-compiladas existem; se não, builda submódulos
-if [ ! -f "lib/libwhisper.so" ]; then
-    echo "Bibliotecas pré-compiladas não encontradas. Preparando..."
+# Baixa modelos se não existirem
+echo "Verificando modelos..."
+
+mkdir -p models
+
+if [ ! -f "models/ggml-tiny.en.bin" ] || [ ! -s "models/ggml-tiny.en.bin" ]; then
+    echo "Baixando ggml-tiny.en.bin..."
+    wget -O models/ggml-tiny.en.bin https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-tiny.en.bin
+fi
+
+if [ ! -f "models/phi-2.Q4_K_M.gguf" ] || [ ! -s "models/phi-2.Q4_K_M.gguf" ]; then
+    echo "Baixando phi-2.Q4_K_M.gguf..."
+    wget -O models/phi-2.Q4_K_M.gguf https://huggingface.co/TheBloke/phi-2-GGUF/resolve/main/phi-2.Q4_K_M.gguf
+fi
+
+echo "Modelos prontos."
+
+# Atualiza submódulos git
+if [ ! -d "lib" ]; then
+
+    echo " > Atualizando submódulos git"
+
+    mkdir -p third_party
+
+    git submodule update --init --recursive --force
     
     # Build Whisper
     echo "Buildando Whisper..."
@@ -35,8 +57,6 @@ if [ ! -f "lib/libwhisper.so" ]; then
     cp third_party/llama.cpp/build/bin/libmtmd.so* lib/
     
     echo "Bibliotecas preparadas."
-else
-    echo "Bibliotecas pré-compiladas encontradas. Pulando build de submódulos."
 fi
 
 # Cria diretório build se não existir
@@ -53,11 +73,4 @@ cmake ..
 echo "Compilando..."
 make
 
-# Executa se compilou com sucesso
-if [ $? -eq 0 ]; then
-    echo "Executando..."
-    ./__app
-else
-    echo "Erro na compilação!"
-    exit 1
-fi
+echo "Configuração finalizada. Para executar o projeto, use: ./__app"

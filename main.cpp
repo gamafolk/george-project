@@ -50,7 +50,7 @@ int main()
 		return 1;
 	}
 
-	const std::string human_prompt = "Hello! Tell me a fun fact about robots.";
+	const std::string human_prompt = "What do you know about the Sun?";
 
 	std::cout << "\n--- CICLO DE INTERACAO SIMULADO ---" << std::endl;
 	std::cout << "Humano (Whisper Transcreveu): " << human_prompt << std::endl;

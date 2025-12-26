@@ -1,5 +1,5 @@
 models/
 out/
-CMakeFiles/
+third_party/
 build/
 lib/
